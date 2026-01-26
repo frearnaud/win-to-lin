@@ -7,7 +7,7 @@ Run Cortex Control in a Windows VM while passing the Quad Cortex USB device dire
 ### Install Required Packages
 
 ```fish
-sudo pacman -S qemu-full virt-manager libvirt edk2-ovmf dnsmasq iptables-nft
+sudo pacman -S qemu-full virt-manager libvirt edk2-ovmf dnsmasq iptables-nft swtpm
 ```
 
 **What these are:**
@@ -17,6 +17,7 @@ sudo pacman -S qemu-full virt-manager libvirt edk2-ovmf dnsmasq iptables-nft
 - `edk2-ovmf` - UEFI firmware for VMs (needed for modern Windows)
 - `dnsmasq` - Network services for VM networking
 - `iptables-nft` - Firewall backend for VM networking
+- `swtpm` - Software TPM emulator (required for Windows 11's TPM 2.0 requirement)
 
 ### Enable Services
 
@@ -199,6 +200,20 @@ Add TPM emulation:
 1. Shut down VM
 2. Add Hardware → TPM → Emulated TIS 2.0
 3. Start VM again
+
+### TPM 2.0 Not Supported Error
+
+If you get "TPM version '2.0' is not supported" when adding TPM:
+
+```fish
+# Install the software TPM emulator
+sudo pacman -S swtpm
+
+# Restart libvirtd to pick up the new capability
+sudo systemctl restart libvirtd
+```
+
+Then try adding the TPM device again.
 
 ## Quick Reference
 

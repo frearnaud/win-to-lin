@@ -72,11 +72,53 @@ Waydroid uses **software rendering** on NVIDIA GPUs (no GPU acceleration). This 
 
 ## ARM App Support
 
-Many Android apps are ARM-only. For x86 systems, install ARM translation:
+Many Android apps are ARM-only. For x86 systems, install ARM translation using waydroid_script:
+
 ```fish
-# Check the Arch Wiki for current instructions:
-# https://wiki.archlinux.org/title/Waydroid#ARM_translation
+# Clone the helper script
+git clone https://github.com/casualsnek/waydroid_script
+cd waydroid_script
+
+# Set up Python venv and install dependencies
+python -m venv venv
+source venv/bin/activate.fish
+pip install -r requirements.txt
+
+# Install libndk ARM translation (recommended for games)
+sudo venv/bin/python main.py install libndk
 ```
+
+After installing, restart Waydroid:
+```fish
+waydroid session stop
+sudo systemctl restart waydroid-container
+waydroid session start
+```
+
+## Google Play Device Certification
+
+Some apps show "this app won't work for your device" because Waydroid isn't certified by Google. To fix:
+
+**1. Get your Android ID:**
+```fish
+sudo waydroid shell -- sqlite3 /data/data/com.google.android.gsf/databases/gservices.db "select * from main where name = 'android_id';"
+```
+This outputs something like `android_id|1234567890123456789`. Copy just the number.
+
+**2. Register the device:**
+- Go to https://www.google.com/android/uncertified/
+- Sign in with the same Google account used in Waydroid
+- Paste the Android ID number and click Register
+
+**3. Clear Play Store data and restart:**
+```fish
+sudo waydroid shell -- pm clear com.android.vending
+waydroid session stop
+waydroid session start
+waydroid show-full-ui
+```
+
+Sign back into Google Play. Certification can take 10-20 minutes to propagate.
 
 ## Useful Commands
 
