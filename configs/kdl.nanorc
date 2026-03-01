@@ -1,0 +1,44 @@
+## Syntax highlighting for KDL (KDL Document Language)
+## https://kdl.dev/
+
+syntax "kdl" "\.kdl$"
+
+## Comments
+# Single-line comments
+color cyan "//.*$"
+# Block comments (basic support - nano doesn't handle multiline well)
+color cyan start="/\*" end="\*/"
+# Slashdash comments (comments out a node/value)
+color cyan "/-"
+
+## Strings
+# Double-quoted strings
+color yellow ""([^"\\]|\\.)*""
+# Raw strings r"..." r#"..."# etc (simplified)
+color yellow "r#*\"[^\"]*\"#*"
+
+## Numbers
+# Hexadecimal
+color magenta "\b0x[0-9a-fA-F_]+\b"
+# Octal
+color magenta "\b0o[0-7_]+\b"
+# Binary
+color magenta "\b0b[01_]+\b"
+# Floats and integers (including scientific notation)
+color magenta "\b[+-]?[0-9][0-9_]*(\.[0-9_]+)?([eE][+-]?[0-9_]+)?\b"
+
+## Booleans and null
+color brightmagenta "\b(true|false|null)\b"
+
+## Type annotations (type)value
+color brightcyan "\([a-zA-Z][a-zA-Z0-9_-]*\)"
+
+## Node names (identifiers at start of line or after {)
+color brightgreen "^[[:space:]]*[a-zA-Z_][a-zA-Z0-9_-]*"
+color brightgreen "\{[[:space:]]*[a-zA-Z_][a-zA-Z0-9_-]*"
+
+## Property names (before =)
+color green "[a-zA-Z_][a-zA-Z0-9_-]*[[:space:]]*="
+
+## Operators and delimiters
+color white "[{};=]"
